@@ -1,0 +1,13 @@
+---
+# The variables file used by the playbooks
+# These don't have to be explicitly imported by vars_files: they are autopopulated.
+
+service_name: front_app
+
+deploy_via: hg
+hg_repo: 'http://mercurial.local/hg/'
+hg_branch: 'tip'
+
+cron_file: ''
+
+keep_releases: 3

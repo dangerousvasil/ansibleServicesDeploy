@@ -1,0 +1,55 @@
+---
+- name: Update repositories cache and install "nginx" package
+  apt: name=nginx state=present update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
+
+# Nginx system.
+- name: Copy nginx configuration in place.
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Remove default nginx vhost config file (if configured).
+  file:
+    path: "{{ nginx_default_vhost_path }}"
+    state: absent
+  when: nginx_remove_default_vhost
+
+
+- name: Add managed vhost config file (if any vhosts are configured).
+  template:
+    src: vhosts.conf.j2
+    dest: "{{ nginx_vhost_path }}/vhosts.conf"
+    mode: 0644
+  when: nginx_vhosts
+
+- name: create a directory www if it doesn't exist
+  file:
+    path: /var/www
+    state : directory
+    owner: "{{ www_user }}"
+    group: "{{ www_user }}"
+    mode : 0755
+
+- name: Add test phpinfo.
+  copy:
+    src: index.html
+    dest: /var/www/index.php
+    owner: "{{ www_user }}"
+    group: "{{ www_user }}"
+    mode: 0775
+
+
+- name: Remove managed vhost config file (if no vhosts are configured).
+  file:
+    path: "{{ nginx_vhost_path }}/vhosts.conf"
+    state: absent
+  when: not nginx_vhosts
+
+- name: Ensure nginx is stopped
+  service: name=nginx state=stopped
+
+- name: Ensure nginx is started and enabled to start at boot.
+  service: name=nginx state=started enabled=yes

@@ -1,0 +1,12 @@
+---
+- hosts: hg
+  remote_user: ansible
+  sudo: yes
+  roles:
+     - hg
+
+- hosts: php-cli
+  remote_user: ansible
+  sudo: yes
+  roles:
+    - php

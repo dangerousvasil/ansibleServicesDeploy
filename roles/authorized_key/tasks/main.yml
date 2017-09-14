@@ -1,0 +1,53 @@
+---
+- name: Set up authorized_keys for the deploy user
+  authorized_key: user=ansible
+                  key="{{ item }}"
+  with_file:
+    - ../keys/deploy.pub
+
+- name: Create sudoers.d directory
+  sudo: yes
+  file:
+    path: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: Set includedir in sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    line: "#includedir /etc/sudoers.d"
+    state: present
+    create: yes
+    validate: "visudo -cf %s"
+
+- name: Create sudoers
+  template:
+    src: sudoers.d.j2
+    dest: "/etc/sudoers.d/ansible_sudo"
+    mode: 0440
+    owner: root
+    group: root
+    validate: "visudo -cf %s"
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+    validate: "visudo -cf %s"
+
+- name: Disallow SSH GSS API authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^GSSAPIAuthentication"
+    line: "GSSAPIAuthentication no"
+    state: present
+    validate: "visudo -cf %s"
+
+- name: Restart sshd
+  service:
+    name=sshd
+    state=restarted

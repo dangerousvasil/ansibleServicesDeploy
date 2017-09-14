@@ -1,0 +1,10 @@
+---
+apt_cache_valid_time: 86400
+ansible_python_interpreter: "/usr/bin/python3"
+
+## Default dir for all codes
+# all code will be in {{ releases_path }}/{{ service_name }}/{{ current_release_dir }}
+releases_path: '/var/www'
+current_release_dir: 'www'
+
+keep_releases: 0

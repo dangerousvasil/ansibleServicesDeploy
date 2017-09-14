@@ -1,0 +1,47 @@
+---
+- name: Install the postgresql packages (APT)
+  apt: >
+    name={{ item }}
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_valid_time }}
+  with_items:
+    - postgresql-9.3
+    - libpq-dev
+    - python-psycopg2
+
+- name: Stop the postgresql service
+  service: name=postgresql state=stopped enabled=yes
+
+- name: Copy the pg_hba configurations
+  template: >
+    src=pg_hba.conf
+    dest=/etc/postgresql/9.3/main/pg_hba.conf
+
+- name: Copy the postgresql.conf configurations
+  template: >
+    src=postgresql.conf
+    dest=/etc/postgresql/9.3/main/postgresql.conf
+
+- name: Start the postgresql service
+  service: name=postgresql state=started enabled=yes
+
+- name: ensure database is created
+  sudo_user: postgres
+  postgresql_db: >
+    name={{ posgresql_dbname }}
+    login_user=postgres
+
+- name: ensure user has access to database
+  sudo_user: postgres
+  postgresql_user: >
+    db={{ posgresql_dbname }}
+    name={{ posgresql_dbuser }}
+    password={{ posgresql_dbpassword }}
+    priv=ALL
+
+- name: ensure user does not have unnecessary privilege
+  sudo_user: postgres
+  postgresql_user: >
+    name={{ posgresql_dbuser }}
+    role_attr_flags=NOSUPERUSER,NOCREATEDB

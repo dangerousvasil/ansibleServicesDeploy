@@ -1,0 +1,4 @@
+---
+- name: "Install the php-cli packages"
+  apt: name={{ item }} state=present update_cache=yes
+  with_items: php7.0-cli
