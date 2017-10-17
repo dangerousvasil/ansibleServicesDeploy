@@ -1,0 +1,23 @@
+---
+- name: GIT | Update remote repository
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ deploy_path.stdout }}"
+    version: "{{ branch }}"
+    force: yes
+    update: yes
+    recursive: yes
+  register: deploy_result
+
+
+- name: GIT | Sync repo subtree to release path
+  shell: >-
+           {
+             git ls-files -z --with-tree="{{ branch }}" | tr '\0' '\n';
+             git submodule foreach --recursive --quiet 'git ls-files -z --with-tree="$sha1" | tr "\0" "\n" | sed "s#^#$path/#"';
+           }
+           | grep "^$prefix"
+           | sed "s#^$prefix/##"
+           | rsync -a --files-from=- "./$prefix/" {{ release_path.stdout }}/
+  args:
+    chdir: "{{ deploy_path.stdout }}"

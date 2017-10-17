@@ -5,6 +5,12 @@
   roles:
      - hg
 
+- hosts: git
+  remote_user: ansible
+  sudo: yes
+  roles:
+     - git
+
 - hosts: php-cli
   remote_user: ansible
   sudo: yes

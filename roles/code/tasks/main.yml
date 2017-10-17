@@ -37,7 +37,7 @@
     state: directory
     recurse: yes
 
-- include: "update-code/{{ deploy_via | default('rsync') }}.yml"
+- include: "update-code/{{ deploy_via | default('git') }}.yml"
 
 - name:  Copy release version into REVISION file
   copy:

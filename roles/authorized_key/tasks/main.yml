@@ -37,7 +37,7 @@
     regexp: "^PermitRootLogin"
     line: "PermitRootLogin no"
     state: present
-    validate: "visudo -cf %s"
+    validate: "/usr/sbin/sshd -tf %s"
 
 - name: Disallow SSH GSS API authentication
   lineinfile:
@@ -45,7 +45,7 @@
     regexp: "^GSSAPIAuthentication"
     line: "GSSAPIAuthentication no"
     state: present
-    validate: "visudo -cf %s"
+    validate: "/usr/sbin/sshd -tf %s"
 
 - name: Restart sshd
   service:

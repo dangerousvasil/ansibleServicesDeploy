@@ -24,7 +24,7 @@ copy ssh-keys and add sudoers line on remote machine
 test key  ssh ansible@192.168.56.101 -i roles/authorized_key/keys/deploy
 may be some permission trouble chmod 600 roles/authorized_key/keys/deploy
 ```
-ansible-playbook -i hosts/dev/hosts.ini authorized_key.yml  -k --ask-sudo-pass
+ansible-playbook -i hosts/prod/hosts.ini task/system/authorized_key.yml  -k --ask-sudo-pass
 ```
 
 ## COMMANDS (выполняем любые команды на группе серверов)
