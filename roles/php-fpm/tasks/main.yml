@@ -65,4 +65,4 @@
   changed_when: "result.rc != 0"
 
 - name: Start the php-fpm service
-  service: name={{ php_fpm_service_name }} state=started enabled=yes
+  service: name={{ php_fpm_service_name }} state=restarted enabled=yes

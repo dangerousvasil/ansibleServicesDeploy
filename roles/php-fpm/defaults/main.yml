@@ -26,8 +26,13 @@ php_fpm_default_pool:
 
 php_fpm_pools:
   - name: www
-    listen: :9000
+    listen: '0.0.0.0:9000'
 
+
+php_fpm_config:
+ - option: "error_log"
+   section: "global"
+   value: "/var/log/php-fpm.log"
 
 
 php_fpm_ini:
@@ -40,8 +45,3 @@ php_fpm_ini:
  - option: "ldap.max_links"
    section: "ldap"
    value: "1"
-
-php_fpm_config:
- - option: "error_log"
-   section: "global"
-   value: "/var/log/php5-fpm.log"

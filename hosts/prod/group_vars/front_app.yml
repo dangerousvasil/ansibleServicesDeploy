@@ -5,7 +5,7 @@
 service_name: front_app
 
 deploy_via: git
-repo: 'https://github.com/dangerousvasil/sanboxService'
+repo: 'https://github.com/dangerousvasil/simpleFront'
 branch: 'master'
 
 cron_file: ''
