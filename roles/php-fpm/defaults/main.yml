@@ -1,12 +1,12 @@
----
-php_fpm_ini_path: /etc/php5/fpm/php.ini
-php_fpm_config_path: /etc/php5/fpm/php-fpm.conf
-php_fpm_pool_d: /etc/php5/fpm/pool.d
 
-php_fpm_binary_name: php5-fpm
-php_fpm_service_name: php5-fpm
+php_fpm_ini_path: /etc/php/7.0/fpm/php.ini
+php_fpm_config_path: /etc/php/7.0/fpm/php-fpm.conf
+php_fpm_pool_d: /etc/php/7.0/fpm/pool.d
 
-php_fpm_pid_file: /var/run/php5-fpm.pid
+php_fpm_binary_name: php-fpm7.0
+php_fpm_service_name: php7.0-fpm
+
+php_fpm_pid_file: /var/run/php-fpm.pid
 
 
 php_fpm_pool_defaults:
@@ -16,10 +16,32 @@ php_fpm_pool_defaults:
   pm.min_spare_servers: 1
   pm.max_spare_servers: 3
 
+
 php_fpm_apt_packages:
-  - php5-fpm
-  - php5-pgsql
+  - php-fpm
 
 php_fpm_default_pool:
   delete: yes
   name: www.conf
+
+php_fpm_pools:
+  - name: www
+    listen: :9000
+
+
+
+php_fpm_ini:
+ - option: "engine"
+   section: "PHP"
+   value: "1"
+ - option: "error_reporting"
+   section: "PHP"
+   value: "E_ALL & ~E_DEPRECATED & ~E_STRICT"
+ - option: "ldap.max_links"
+   section: "ldap"
+   value: "1"
+
+php_fpm_config:
+ - option: "error_log"
+   section: "global"
+   value: "/var/log/php5-fpm.log"

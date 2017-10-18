@@ -23,30 +23,7 @@
     src: vhosts.conf.j2
     dest: "{{ nginx_vhost_path }}/vhosts.conf"
     mode: 0644
-  when: nginx_vhosts
-
-- name: create a directory www if it doesn't exist
-  file:
-    path: /var/www
-    state : directory
-    owner: "{{ www_user }}"
-    group: "{{ www_user }}"
-    mode : 0755
-
-- name: Add test phpinfo.
-  copy:
-    src: index.html
-    dest: /var/www/index.php
-    owner: "{{ www_user }}"
-    group: "{{ www_user }}"
-    mode: 0775
-
-
-- name: Remove managed vhost config file (if no vhosts are configured).
-  file:
-    path: "{{ nginx_vhost_path }}/vhosts.conf"
-    state: absent
-  when: not nginx_vhosts
+    validate:  "/usr/sbin/nginx -t -c %s"
 
 - name: Ensure nginx is stopped
   service: name=nginx state=stopped

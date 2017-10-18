@@ -1,0 +1,6 @@
+---
+- hosts: nginx-front
+  remote_user: ansible
+  sudo: yes
+  roles:
+     - nginx-front

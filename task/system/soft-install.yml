@@ -16,3 +16,9 @@
   sudo: yes
   roles:
     - php
+
+- hosts: php-fpm
+  remote_user: ansible
+  sudo: yes
+  roles:
+    - php-fpm

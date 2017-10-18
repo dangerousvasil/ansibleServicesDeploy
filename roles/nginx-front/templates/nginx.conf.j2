@@ -36,25 +36,6 @@ http {
         proxy_cache_path {{ nginx_proxy_cache_path }};
     {% endif %}
 
-    {% for upstream in nginx_upstreams %}
-        upstream {{ upstream.name }} {
-        {% if upstream.strategy is defined %}
-        {{ upstream.strategy }};
-        {% endif %}
-        {% for server in upstream.servers %}
-            server {{ server }};
-        {% endfor %}
-        }
-    {% endfor %}
-
-
-    {% if php_fpm_pools is defined %}
-    upstream {{ php_fpm_local_pools_name }} {
-        {% for pool in php_fpm_pools %}
-        server {{ pool.listen }};
-        {% endfor %}
-    }
-    {% endif %}
 
     include {{ nginx_conf_path }}/*.conf;
 

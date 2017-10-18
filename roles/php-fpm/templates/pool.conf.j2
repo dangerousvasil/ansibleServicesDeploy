@@ -2,10 +2,13 @@
 
 
 [{{ item.name }}]
+
+user = {{ www_user }}
 ; Defaults
 {% for directive, value in php_fpm_pool_defaults.iteritems() %}
   {{ directive }} = {{ value }}
 {% endfor %}
+
 
 ; Pool custom directives
 {% for directive, value in item.iteritems() if directive != "name" %}
