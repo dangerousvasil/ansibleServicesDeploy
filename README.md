@@ -19,23 +19,22 @@ Generating public/private key pair.
 Enter file in which to save the key (/home/username/.ssh/id_ecdsa): roles/authorized_key/keys
 
 ```
-
-## Проблемы с подключением
-```bash
- UNREACHABLE! => {
-    "changed": false, 
-    "msg": "Failed to connect to the host via ssh: Permission denied (publickey,password).\r\n", 
-    "unreachable": true
-}
+### Зарегистрируем ключи 
+после перезагрузки необходимо заново регитрировать ключи 
 ```
-Try registering the private key to your keychain
+cp roles/authorized_key/keys/id_rsa ~/.ssh/id_rsa_deploy && chmod 700 ~/.ssh/id_rsa_deploy && ssh-add ~/.ssh/id_rsa_deploy
 ```
-ssh-agent bash
-ssh-add roles/authorized_key/keys/id_rsa 
+или прописать их в конфигурации клиента ссх 
+```
+cp roles/authorized_key/keys/id_rsa /etc/ssh/ssh_hg_deploy_key && chmod 700 /etc/ssh/ssh_hg_deploy_key
+
+cat /etc/ssh/ssh_config
+...
+   IdentityFile /etc/ssh/ssh_hg_deploy_key
+...
 ```
 
-
-## AUTHORIZED KEY (копируем ключи на сервера ВМ)
+## AUTHORIZED KEY (копируем ключи на ВМ)
 copy ssh-keys and add sudoers line on remote machine
 test key  ssh ansible@192.168.56.101 -i roles/authorized_key/keys/deploy
 may be some permission trouble chmod 600 roles/authorized_key/keys/deploy
