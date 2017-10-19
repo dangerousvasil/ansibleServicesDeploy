@@ -10,3 +10,8 @@
   become: yes
   roles:
     - php-fpm-restart
+
+- hosts: nginx
+  become: yes
+  roles:
+    - nginx-reload

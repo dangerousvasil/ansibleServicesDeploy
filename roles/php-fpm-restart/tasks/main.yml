@@ -3,7 +3,7 @@
   include_vars:
       file: '../php-fpm/defaults/main.yml'
 
-- name: Start the php-fpm service
+- name: Restart the php-fpm service
   service: name={{ php_fpm_service_name }} state=restarted enabled=yes
 
 

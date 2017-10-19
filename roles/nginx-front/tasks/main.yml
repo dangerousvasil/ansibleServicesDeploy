@@ -3,7 +3,7 @@
   apt: name=nginx state=present update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
 
 # Nginx system.
-- name: Copy nginx configuration in place.
+- name: Copy nginx configuration in place
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -11,14 +11,14 @@
     group: root
     mode: 0644
 
-- name: Remove default nginx vhost config file (if configured).
+- name: Remove default nginx vhost config file (if configured)
   file:
     path: "{{ nginx_default_vhost_path }}"
     state: absent
   when: nginx_remove_default_vhost
 
 
-- name: Add managed vhost config file (if any vhosts are configured).
+- name: Add managed vhost config file (if any vhosts are configured)
   template:
     src: vhosts.conf.j2
     dest: "{{ nginx_vhost_path }}/vhosts.conf"
@@ -28,5 +28,5 @@
 - name: Ensure nginx is stopped
   service: name=nginx state=stopped
 
-- name: Ensure nginx is started and enabled to start at boot.
+- name: Ensure nginx is started and enabled to start at boot
   service: name=nginx state=started enabled=yes
