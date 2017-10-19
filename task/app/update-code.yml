@@ -5,3 +5,8 @@
   become: yes
   roles:
      - code
+
+- hosts: php-fpm
+  become: yes
+  roles:
+    - php-fpm-restart

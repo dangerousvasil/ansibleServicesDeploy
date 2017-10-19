@@ -7,17 +7,33 @@ and set ip in hosts.ini file
 для окружения разработчиков списки вм буду храниться в файле
 ```
 hosts/prod/hosts.ini 
+hosts/dev/hosts.ini 
 ```
 
 
 ## KEYS
-create pair of keys here
+create pair of keys here __roles/authorized_key/keys__
 ```
 ssh-keygen
 Generating public/private key pair.
 Enter file in which to save the key (/home/username/.ssh/id_ecdsa): roles/authorized_key/keys
 
 ```
+
+## Проблемы с подключением
+```bash
+ UNREACHABLE! => {
+    "changed": false, 
+    "msg": "Failed to connect to the host via ssh: Permission denied (publickey,password).\r\n", 
+    "unreachable": true
+}
+```
+Try registering the private key to your keychain
+```
+ssh-agent bash
+ssh-add roles/authorized_key/keys/id_rsa 
+```
+
 
 ## AUTHORIZED KEY (копируем ключи на сервера ВМ)
 copy ssh-keys and add sudoers line on remote machine
@@ -44,16 +60,3 @@ ansible-playbook -i hosts/dev/hosts.ini task/system/soft-install.yml
 ansible-playbook -i hosts/dev/hosts.ini task/update-code.yml
 ```
 
-## Проблемы с подключением
-```bash
- UNREACHABLE! => {
-    "changed": false, 
-    "msg": "Failed to connect to the host via ssh: Permission denied (publickey,password).\r\n", 
-    "unreachable": true
-}
-```
-Try registering the private key to your keychain
-```
-ssh-agent bash
-ssh-add <path to private key>
-```

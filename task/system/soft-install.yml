@@ -1,24 +1,24 @@
 ---
 - hosts: hg
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
      - hg
 
 - hosts: git
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
      - git
 
 - hosts: php-cli
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
     - php
 
 - hosts: php-fpm
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
     - php-fpm

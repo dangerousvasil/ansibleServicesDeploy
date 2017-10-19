@@ -66,3 +66,6 @@
 
 - name: Start the php-fpm service
   service: name={{ php_fpm_service_name }} state=restarted enabled=yes
+  tags:
+    - restart
+

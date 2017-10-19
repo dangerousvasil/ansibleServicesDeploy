@@ -2,6 +2,6 @@
 - name: apply common configuration to all nodes
   hosts: all
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
     - authorized_key

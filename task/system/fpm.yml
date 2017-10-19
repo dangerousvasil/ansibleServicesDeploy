@@ -1,6 +1,6 @@
 ---
 - hosts: php-fpm
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
     - php-fpm
