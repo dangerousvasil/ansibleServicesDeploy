@@ -1,6 +1,12 @@
 ---
 - hosts: nginx-front
   remote_user: ansible
-  sudo: yes
+  become: yes
   roles:
      - nginx-front
+
+- hosts: nginx-front
+  remote_user: ansible
+  become: yes
+  roles:
+     - nginx-restart

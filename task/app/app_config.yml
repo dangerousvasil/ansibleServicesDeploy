@@ -1,0 +1,7 @@
+---
+- hosts:
+    front_app
+    services
+  become: yes
+  roles:
+    - app_config

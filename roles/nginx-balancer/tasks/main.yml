@@ -18,9 +18,9 @@
 - name: Add managed vhost config file (if any vhosts are configured)
   template:
     src: vhosts.conf.j2
-    dest: "{{ nginx_vhost_path }}/vhosts.conf"
+    dest: "{{ nginx_vhost_path }}/vhosts_services.conf"
     mode: 0644
-    validate:  "/usr/sbin/nginx -t -c %s"
+    #validate: "/usr/sbin/nginx -t -c %s"
 
 - name: Ensure nginx is stopped
   service: name=nginx state=stopped

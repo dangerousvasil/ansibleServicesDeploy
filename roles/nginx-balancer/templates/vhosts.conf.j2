@@ -1,0 +1,54 @@
+
+{% for service in with_services %}
+
+
+upstream php-{{ service }}
+{
+    {% for upstream in groups[service] %}
+        server {{ hostvars[upstream]["ansible_host"] }}:9000;
+    {% endfor %}
+}
+
+{% set vmvars = hostvars[groups[service][0]] %}
+
+server {
+
+    server_name {{ vmvars["service_name"] }};
+
+    root {{ vmvars["releases_path"] }}/{{ vmvars["service_name"] }}/{{ vmvars["current_release_dir"] }};
+
+    listen 80;
+
+    location /assets/ {
+        root {{ vmvars["releases_path"] }}/{{ vmvars["service_name"] }}/{{ vmvars["current_release_dir"] }};
+    }
+
+    location / {
+        fastcgi_pass php-{{ service }};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/api/index.php;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
+
+server {
+
+    server_name {{ vmvars["service_name"] }}_web;
+
+    root {{ vmvars["releases_path"] }}/{{ vmvars["service_name"] }}/{{ vmvars["current_release_dir"] }};
+
+    listen 80;
+
+    location /assets/ {
+        root {{ vmvars["releases_path"] }}/{{ vmvars["service_name"] }}/{{ vmvars["current_release_dir"] }};
+    }
+
+    location / {
+        fastcgi_pass php-{{ service }};
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/web/index.php;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
+
+{% endfor %}

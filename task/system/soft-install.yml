@@ -17,6 +17,12 @@
   roles:
     - php
 
+- hosts: nginx
+  remote_user: ansible
+  become: yes
+  roles:
+    - nginx
+
 - hosts: php-fpm
   remote_user: ansible
   become: yes

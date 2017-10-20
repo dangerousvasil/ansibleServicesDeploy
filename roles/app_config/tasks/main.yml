@@ -1,0 +1,13 @@
+---
+- name: Creates configuration directory
+  file:
+    path: "{{ application_configuration_path | dirname }}"
+    state: directory
+    recurse: yes
+
+- name: Add application configuration file
+  template:
+    src: application.conf.j2
+    dest: "{{ application_configuration_path }}"
+    force: yes
+    mode: 0644

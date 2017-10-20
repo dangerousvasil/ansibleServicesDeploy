@@ -1,0 +1,9 @@
+[application]
+
+{% for upstream in groups["nginx-balancer"] %}
+service.host[]={{ hostvars[upstream]["ansible_host"] }}
+{% endfor %}
+
+
+
+[services]

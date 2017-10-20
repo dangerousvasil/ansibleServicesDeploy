@@ -3,7 +3,7 @@
   authorized_key: user=ansible
                   key="{{ item }}"
   with_file:
-    - ../keys/deploy.pub
+    - ../keys/id_rsa.pub
 
 - name: Create sudoers.d directory
   sudo: yes

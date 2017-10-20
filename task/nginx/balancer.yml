@@ -1,0 +1,18 @@
+---
+- hosts: nginx-balancer
+  remote_user: ansible
+  become: yes
+  roles:
+     - nginx-balancer
+
+- hosts: nginx-balancer
+  remote_user: ansible
+  become: yes
+  roles:
+     - nginx-restart
+
+
+- hosts: php-fpm
+  become: yes
+  roles:
+    - php-fpm-restart

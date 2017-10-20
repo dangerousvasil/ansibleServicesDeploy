@@ -39,7 +39,7 @@ copy ssh-keys and add sudoers line on remote machine
 test key  ssh ansible@192.168.56.101 -i roles/authorized_key/keys/deploy
 may be some permission trouble chmod 600 roles/authorized_key/keys/deploy
 ```
-ansible-playbook -i hosts/prod/hosts.ini task/system/authorized_key.yml  -k --ask-sudo-pass
+ansible-playbook -i hosts/prod.ini task/system/authorized_key.yml  -k --ask-sudo-pass
 ```
 
 ## COMMANDS (выполняем любые команды на группе серверов)
@@ -51,11 +51,31 @@ ansible all -i hosts/prod.ini -m shell -a 'ls /etc'
 ## INSTALL services
 install nginx,php-fpm,..,posgresql,redis for services and apps
 ```
-ansible-playbook -i hosts/dev/hosts.ini task/system/soft-install.yml
+ansible-playbook -i hosts/prod.ini task/system/soft-install.yml
 ```
 
 ## UPDATE CODE
 ```
-ansible-playbook -i hosts/dev/hosts.ini task/update-code.yml
+ansible-playbook -i hosts/prod.ini task/update-code.yml
 ```
 
+## CONFIGURE NGINX
+
+
+Configure balancer nginx services 
+```
+
+hosts/group_vars/nginx-balancer.yml
+...
+    with_services:
+      - sign
+...
+ 
+```
+
+Run playbooks
+```
+ansible-playbook -i hosts/prod.ini task/nginx/balancer.yml 
+ansible-playbook -i hosts/prod.ini task/nginx/front.yml 
+
+```
