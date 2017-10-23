@@ -24,7 +24,7 @@ Enter file in which to save the key (/home/username/.ssh/id_ecdsa): roles/author
 ```
 cp roles/authorized_key/keys/id_rsa ~/.ssh/id_rsa_deploy && chmod 700 ~/.ssh/id_rsa_deploy && ssh-add ~/.ssh/id_rsa_deploy
 ```
-или прописать их в конфигурации клиента ссх 
+или прописать их в конфигурации клиента ssh 
 ```
 cp roles/authorized_key/keys/id_rsa /etc/ssh/ssh_hg_deploy_key && chmod 700 /etc/ssh/ssh_hg_deploy_key
 
