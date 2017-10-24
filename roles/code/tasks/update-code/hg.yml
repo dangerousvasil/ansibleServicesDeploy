@@ -2,12 +2,12 @@
 - name: HG | Update remote repository
   hg:
     repo: "{{ hg_repo }}"
-    dest: "{{ deploy_path.stdout }}"
+    dest: "{{ deploy_path }}"
     revision: "{{ hg_branch }}"
     force: yes
   register: deploy_result
 
 - name: HG | Sync repo to release path
-  shell: "hg archive -r {{ hg_branch }} {{ release_path.stdout }}"
+  shell: "hg archive -r {{ hg_branch }} {{ release_path }}"
   args:
-    chdir: "{{ deploy_path.stdout }}"
+    chdir: "{{ deploy_path }}"

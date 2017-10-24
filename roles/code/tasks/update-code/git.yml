@@ -2,7 +2,7 @@
 - name: GIT | Update remote repository
   git:
     repo: "{{ repo }}"
-    dest: "{{ deploy_path.stdout }}"
+    dest: "{{ deploy_path }}"
     version: "{{ branch }}"
     force: yes
     update: yes
@@ -18,6 +18,6 @@
            }
            | grep "^$prefix"
            | sed "s#^$prefix/##"
-           | rsync -a --files-from=- "./$prefix/" {{ release_path.stdout }}/
+           | rsync -a --files-from=- "./$prefix/" {{ release_path }}/
   args:
-    chdir: "{{ deploy_path.stdout }}"
+    chdir: "{{ deploy_path }}"

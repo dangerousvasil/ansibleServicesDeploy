@@ -8,61 +8,53 @@
   delegate_to: 127.0.0.1
   become_user: ansible
 
-- name:  Get base service path
-  command: echo "{{ releases_path }}/{{ service_name }}"
-  register: code_base_path
+- name:   Get base service path
+  set_fact: code_base_path="{{ releases_path }}/{{ service_name }}"
 
 - name:  Get release path
-  command: echo "{{ code_base_path.stdout }}/releases/{{ release_version }}"
-  register: release_path
+  set_fact: release_path="{{ code_base_path }}/releases/{{ release_version }}"
 
 - name:  Get release path
-  command: echo "{{ code_base_path.stdout }}/deploy"
-  register: deploy_path
+  set_fact: deploy_path="{{ code_base_path }}/deploy"
 
 - name: Clear up directory to get code
   file:
     state: absent
-    path: "{{ deploy_path.stdout }}"
+    path: "{{ deploy_path }}"
 
 - name: Creates directory to get code
   file:
-    path: "{{ deploy_path.stdout }}"
+    path: "{{ deploy_path }}"
     state: directory
     recurse: yes
 
 - name: Creates directory to release code
   file:
-    path: "{{ release_path.stdout }}"
+    path: "{{ release_path }}"
     state: directory
     recurse: yes
 
-- include: "update-code/{{ deploy_via | default('git') }}.yml"
-
-- name:  Copy release version into REVISION file
-  copy:
-    content: "{{ release_version }}"
-    dest: "{{ code_base_path.stdout }}/REVISION"
+- include_tasks: "update-code/{{ deploy_via | default('git') }}.yml"
 
 - name: Clearup deploy directory
   file:
     state: absent
-    path: "{{ deploy_path.stdout }}"
+    path: "{{ deploy_path }}"
 
 - name: Remove current link
   file:
     state: absent
-    path: "{{ code_base_path.stdout }}/{{ current_release_dir }}"
+    path: "{{ code_base_path }}/{{ current_release_dir }}"
 
 # Performs symlink exchange
 - name:  Change softlink to new release
   file:
     state: link
-    path: "{{ code_base_path.stdout }}/{{ current_release_dir }}"
-    src: "{{ release_path.stdout }}"
+    path: "{{ code_base_path }}/{{ current_release_dir }}"
+    src: "{{ release_path }}"
 
 - name: Clean up releases
-  shell: ls -1dt {{ code_base_path.stdout }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
+  shell: ls -1dt {{ code_base_path }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
   args:
     chdir: "/"
   when: keep_releases > 0
