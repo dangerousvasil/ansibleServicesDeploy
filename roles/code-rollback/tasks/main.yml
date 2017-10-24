@@ -9,52 +9,44 @@
   shell: echo `readlink -f {{ code_base_path }}/{{ current_release_dir }}`
   register: current_version
 
-- name:  Get current version
+- name: Get current version
   set_fact: current_version="{{ current_version.stdout | basename }}"
 
-- name:  Get all release versions
+- name: Get all release versions
   command: ls -1t {{ releases_path }}
   register: last_versions
 
-- name:  Get all release versions
+- name: Get all release versions
   set_fact: last_versions="{{ last_versions.stdout | regex_findall('([0-9]{14}Z)') }}"
 
 # filter only old
 - name: Get rollback release versions
-  set_fact: last_versions="{% for last_version in last_versions %}{% if last_version < current_version %} {{ last_version }} {% endif %}{% endfor %}"
+  set_fact: last_versions="{% for last_version in last_versions %}{% if last_version < current_version %}{{ last_version }} {% endif %}{% endfor %}"
 
 - name:  Get rollback release versions
   set_fact: last_versions="{{ last_versions | regex_findall('([0-9]{14}Z)') }}"
 
-- name:  Check suitable released
+- name: Check suitable released
   fail:
     msg: "Could not roll back the code because there is no prior release"
   when: last_versions|count|int < 1
 
-- name:  Get last release version
+- name: Get last release version
   set_fact: last_version="{{ last_versions | max }}"
 
 - stat:
     path: "{{ releases_path }}/{{ last_version }}"
-  register: stat_rollback_release_version
+  register: stat_last_version
   when: last_version != ""
 
-- name:  Check is suitable release
+- name: Check is suitable release
   fail:
     msg: "Could not roll back the code because there is no prior release"
-  when:  last_version != "" and (stat_rollback_release_version.stat.exists is not defined or stat_rollback_release_version.stat.isdir == False)
+  when:  last_version != "" and (stat_last_version.stat.exists is not defined or stat_last_version.stat.isdir == False)
 
-- debug:
-    msg: "Current release version {{ current_version }}. Rollback version {{ last_version }}"
-
-- name: Remove current link
-  file:
-    state: absent
-    path: "{{ code_base_path }}/{{ current_release_dir }}"
-
-# Performs symlink exchange
-- name:  Change softlink to rollback release
+- name:  Change softlink from {{ current_version }} to rollback release {{ last_version }}
   file:
     state: link
+    force: yes
     path: "{{ code_base_path }}/{{ current_release_dir }}"
     src: "{{ releases_path }}/{{ last_version }}"

@@ -1,6 +1,5 @@
 ---
-# Update code deployment step
-- name:  Get release version
+- name: Get release version
   set_fact:
     release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
   run_once: true
@@ -8,13 +7,13 @@
   delegate_to: 127.0.0.1
   become_user: ansible
 
-- name:   Get base service path
+- name: Get base service path
   set_fact: code_base_path="{{ releases_path }}/{{ service_name }}"
 
-- name:  Get release path
+- name: Get release path
   set_fact: release_path="{{ code_base_path }}/releases/{{ release_version }}"
 
-- name:  Get release path
+- name: Get release path
   set_fact: deploy_path="{{ code_base_path }}/deploy"
 
 - name: Clear up directory to get code
@@ -41,15 +40,11 @@
     state: absent
     path: "{{ deploy_path }}"
 
-- name: Remove current link
-  file:
-    state: absent
-    path: "{{ code_base_path }}/{{ current_release_dir }}"
-
 # Performs symlink exchange
 - name:  Change softlink to new release
   file:
     state: link
+    force: yes
     path: "{{ code_base_path }}/{{ current_release_dir }}"
     src: "{{ release_path }}"
 

@@ -9,7 +9,6 @@
     recursive: yes
   register: deploy_result
 
-
 - name: GIT | Sync repo subtree to release path
   shell: >-
            {
