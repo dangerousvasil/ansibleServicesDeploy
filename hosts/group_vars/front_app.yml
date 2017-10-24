@@ -10,4 +10,4 @@ branch: 'master'
 
 cron_file: ''
 
-keep_releases: 3
+keep_releases: 10
