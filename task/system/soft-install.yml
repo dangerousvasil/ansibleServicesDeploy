@@ -16,15 +16,18 @@
   become: yes
   roles:
     - php
+  tags: php
 
 - hosts: nginx
   remote_user: ansible
   become: yes
   roles:
     - nginx
+  tags: nginx
 
 - hosts: php-fpm
   remote_user: ansible
   become: yes
   roles:
     - php-fpm
+  tags: php
