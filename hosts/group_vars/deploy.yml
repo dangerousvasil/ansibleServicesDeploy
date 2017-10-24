@@ -1,0 +1,13 @@
+---
+# The variables file used by the playbooks
+# These don't have to be explicitly imported by vars_files: they are autopopulated.
+
+service_name: deploy
+
+deploy_via: git
+repo: 'https://github.com/dangerousvasil/ansibleServicesDeploy'
+branch: 'master'
+
+cron_file: ''
+
+keep_releases: 10
