@@ -1,0 +1,82 @@
+---
+- name: Get base service path
+  set_fact: code_base_path="{{ releases_path }}/{{ service_name }}"
+
+- debug:
+    msg: "Base path {{ code_base_path }}"
+
+- name: Get releases service path
+  set_fact: releases_path="{{ code_base_path }}/releases"
+
+- debug:
+    msg: "Releases path {{ releases_path }}"
+
+- name: Get number of releases
+  shell: echo `ls -1t {{ releases_path }} | wc -l`
+  register: versions_count
+
+- name:  Check if there is more than one release
+  fail:
+    msg: "Could not roll back the code because there is no prior release"
+  when: versions_count.stdout|int <= 1
+
+- name: Get number of releases
+  shell: echo `readlink -f {{ code_base_path }}/{{ current_release_dir }}`
+  register: stat_current_version
+
+- name:  Get current version
+  set_fact: current_version="{{ stat_current_version.stdout | basename }}"
+
+- debug:
+    msg: "Current version {{ current_version }}"
+
+- name:  Get all versions
+  command: ls -1t {{ releases_path }}
+  register: last_versions
+
+- name:  Get all versions
+  set_fact: last_versions="{{ last_versions.stdout | regex_findall('([0-9]{14}Z)') }}"
+
+# filter only old
+- name: Get last versions
+  set_fact: last_versions="{% for last_version in last_versions %}\
+      {% if last_version < current_version %}\
+       {{ last_version }}\
+      {% endif %}\
+    {% endfor %}"
+
+- name:  Get last versions
+  set_fact: last_versions="{{ last_versions | regex_findall('([0-9]{14}Z)') }}"
+
+- name:  Check if there is more than one suitable release
+  fail:
+    msg: "Could not roll back the code because there is no prior release"
+  when: last_versions|count|int < 1
+
+- name:  Get last version
+  set_fact: last_version="{{ last_versions | max }}"
+
+- stat:
+    path: "{{ releases_path }}/{{ last_version }}"
+  register: stat_rollback_release_version
+  when: last_version != ""
+
+- name:  Final check if this suitable release
+  fail:
+    msg: "Could not roll back the code because there is no prior release"
+  when:  last_version != "" and (stat_rollback_release_version.stat.exists is not defined or stat_rollback_release_version.stat.isdir == False)
+
+- debug:
+    msg: "Rollback version {{ last_version }}"
+
+- name: Remove current link
+  file:
+    state: absent
+    path: "{{ code_base_path }}/{{ current_release_dir }}"
+
+# Performs symlink exchange
+- name:  Change softlink to rollback release
+  file:
+    state: link
+    path: "{{ code_base_path }}/{{ current_release_dir }}"
+    src: "{{ releases_path }}/{{ last_version }}"
