@@ -1,6 +1,7 @@
 Доброго дня. Сегодня мы будем говорить об Ansible и сервисах, можно конечно использовать и другие запчасти для SOA типа Docker, Jenkins и Puppet, но сегодня у нас Ansible, сервисы и пару строчек PHP.
-Многие из вас видели такие картинки
-<img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/SOA_Elements.png" alt="SOA"/>
+Многие из вас видели такие картинки (картинки и символы изменены)
+
+<img src="https://raw.githubusercontent.com/dangerousvasil/ansibleServicesDeploy/master/soansible.png" alt="SOA"/>
 
 и читали такие статьи c картинками
 https://habrahabr.ru/company/oleg-bunin/blog/340114/
