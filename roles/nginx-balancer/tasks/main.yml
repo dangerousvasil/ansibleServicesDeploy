@@ -22,7 +22,6 @@
     mode: 0644
     validate: "/usr/sbin/nginx -t -c %s"
 
-
 - name: Ensure nginx is stopped
   service: name=nginx state=stopped
 
