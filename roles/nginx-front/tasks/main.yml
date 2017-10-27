@@ -1,13 +1,5 @@
 ---
 # Nginx system.
-- name: Copy nginx configuration in place
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-    owner: root
-    group: root
-    mode: 0644
-
 - name: Remove default nginx vhost config file (if configured)
   file:
     path: "{{ nginx_default_vhost_path }}"
@@ -19,6 +11,14 @@
   template:
     src: vhosts.conf.j2
     dest: "{{ nginx_vhost_path }}/vhosts.conf"
+    mode: 0644
+
+- name: Copy nginx configuration in place
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
     mode: 0644
     validate:  "/usr/sbin/nginx -t -c %s"
 

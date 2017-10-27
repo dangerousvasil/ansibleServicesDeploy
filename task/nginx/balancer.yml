@@ -1,17 +1,17 @@
 ---
 - hosts: nginx-balancer
   remote_user: ansible
-  become: yes
+  become: true
   roles:
      - nginx-balancer
 
 - hosts: nginx-balancer
   remote_user: ansible
-  become: yes
+  become: true
   roles:
      - nginx-restart
 
 - hosts: php-fpm
-  become: yes
+  become: true
   roles:
     - php-fpm-restart

@@ -2,16 +2,16 @@
 - hosts:
     front_app
     services
-  become: yes
+  become: true
   roles:
      - code
 
 - hosts: php-fpm
-  become: yes
+  become: true
   roles:
     - php-fpm-restart
 
 - hosts: nginx
-  become: yes
+  become: true
   roles:
     - nginx-reload
