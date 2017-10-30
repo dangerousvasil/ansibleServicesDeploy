@@ -25,7 +25,7 @@ server {
 
     location / {
         fastcgi_pass php-{{ service }};
-        include fastcgi_params;
+        include /etc/nginx/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root/api/index.php;
         fastcgi_param PATH_INFO $fastcgi_path_info;
     }
@@ -45,7 +45,7 @@ server {
 
     location / {
         fastcgi_pass php-{{ service }};
-        include fastcgi_params;
+        include /etc/nginx/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root/web/index.php;
         fastcgi_param PATH_INFO $fastcgi_path_info;
     }
