@@ -1,7 +1,21 @@
 ---
 - name: apply common configuration to all nodes
   hosts: all
-  remote_user: ansible
+  remote_user: "{{ remote_user }}"
   become: true
   roles:
     - authorized_key
+
+
+  vars_prompt:
+    - name: ansible_user
+      prompt: "Product deploy user"
+      default: "ansible"
+
+    - name: ansible_ssh_pass
+      prompt: "Enter ssh password"
+      private: yes
+
+    - name: ansible_become_pass
+      prompt: "Enter root password"
+      private: yes

@@ -11,3 +11,6 @@ keep_releases: 0
 
 apt_cache_valid_time: 86400
 www_user: 'www-data'
+
+remote_user: ansible
+deploy_user: ansible
