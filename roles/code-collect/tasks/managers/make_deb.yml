@@ -1,0 +1,41 @@
+---
+
+- name: MAKE | Check make file
+  file:
+    path: "{{ code_deploy_path }}/make.sh"
+    mode: "+x"
+
+- name: MAKE | MAKE
+  shell: "{{ code_deploy_path }}/make.sh"
+  args:
+    executable: /bin/bash
+    chdir: "{{ code_deploy_path }}"
+  environment:
+    GO111MODULE: "on"
+    GOROOT: "{{GOROOT|default('/opt/go/')}}"
+    GOPATH: "{{GOPATH|default('/tmp/gomodules/')}}"
+
+- name: MAKE | Move DEB
+  shell: "mv {{ code_deploy_path }}/*.deb {{ code_base_path }}"
+  args:
+    chdir: "{{ code_deploy_path }}"
+
+- name: MAKE | Clear deploy files
+  file:
+    state: absent
+    path: "{{ code_deploy_path }}"
+
+- name: Get list deb
+  find:
+    paths: "{{ code_base_path }}"
+    patterns: "*.deb"
+  register: debsFind
+
+- name: MAKE | Register debs check
+  fail:
+    msg: "MAKE | Debian package not found"
+  when: debsFind.files|length != 1
+
+- name: MAKE | Register debs
+  set_fact:
+    debs: "{{ debsFind.files }}  + {{ debs | default([]) }}"

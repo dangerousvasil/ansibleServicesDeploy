@@ -1,0 +1,18 @@
+---
+
+- name: MAKE | Check make file
+  file:
+    path: "{{ code_deploy_path }}/make.sh"
+    mode: "+x"
+
+- name: MAKE | MAKE
+  shell: "{{ code_deploy_path }}/make.sh"
+  args:
+    executable: /bin/bash
+    chdir: "{{ code_deploy_path }}"
+  become: yes
+  become_user: "{{ www_user }}"
+  environment:
+    GO111MODULE: "on"
+    GOROOT: "{{GOROOT|default('/opt/go/')}}"
+    GOPATH: "{{GOPATH|default('/tmp/gomodules/')}}"

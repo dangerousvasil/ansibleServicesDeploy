@@ -1,0 +1,13 @@
+---
+
+- name: GIT | Set git credentials
+  template: src=credentials.j2 dest="{{ code_base_path }}/.git-credentials"
+  become: yes
+
+- name: GIT | Update remote repository
+  shell: "git clone --single-branch --branch {{ branch }} --depth 1 {{ repository_url }} {{ code_deploy_path }} -c credential.helper='store --file={{ code_base_path }}/.git-credentials'"
+
+- name: GIT | Absent credentials
+  file:
+    path: "{{ code_base_path }}/.git-credentials"
+    state: absent

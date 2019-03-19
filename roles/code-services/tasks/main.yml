@@ -1,0 +1,18 @@
+---
+
+- name: Use role in loop
+  include_role:
+    name: code-collect
+  vars:
+    project: "{{ __srv }}"
+    repository_url: "{{ services[__srv]['repository_url'] }}"
+    branch: "{{ services[__srv]['branch'] | default('master') }}"
+    make: "{{ services[__srv]['make'] | default(false) }}"
+    make_deb: "{{ services[__srv]['make_deb'] | default(false) }}"
+    shell: "{{ services[__srv]['shell'] | default(false) }}"
+    composer: "{{ services[__srv]['composer'] | default(false) }}"
+    code_src_path: "{{ services[__srv]['code_src_path'] | default('/u01/src') }}"
+  with_items: "{{ services }}"
+  loop_control:
+    loop_var: __srv
+

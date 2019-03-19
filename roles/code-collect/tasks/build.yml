@@ -1,0 +1,65 @@
+---
+- name: VCS | SSH host finger print
+  include_role:
+    name: ssh_add_knowhost
+  vars:
+    url_to_add: "{{ repository_url }}"
+
+- name: SYNC | Get release version
+  set_fact:
+    release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
+  when: release_version is not defined
+
+- name: VCS | Get base service path
+  set_fact: code_base_path="/tmp/{{ project }}/{{ user }}/{{ release_version }}"
+
+- name: VCS | Get deploy service path
+  set_fact: code_deploy_path="/{{ code_base_path }}/deploy"
+
+- name: VCS | Clear up directory to get code
+  file:
+    state: absent
+    path: "{{ code_base_path }}"
+
+- name: VCS | Creates directory to releases code
+  file:
+    path: "{{ code_base_path }}"
+    state: directory
+    owner: "{{ rsync_user }}"
+    recurse: yes
+
+- include_tasks: "update-code/{{ deploy_via | default('git') }}.yml"
+
+- name: VCS | Chown directory to releases code
+  file:
+    path: "{{ code_base_path }}"
+    owner: "{{ rsync_user }}"
+    recurse: yes
+
+- name: COMPOSER | Clear
+  file:
+    path: "{{ code_deploy_path }}/vendor"
+    state: absent
+  when: managing_composer is defined and managing_composer == true
+
+- name: COMPOSER | Set credentials
+  template: src=composer.j2 dest="{{ code_deploy_path }}/auth.json"
+  owner: "{{ rsync_user }}"
+  become: yes
+
+- name: COMPOSER | Managing
+  composer:
+    command: update
+    working_dir: "{{ code_deploy_path }}"
+  become: yes
+  become_user: "{{ rsync_user }}"
+  when: managing_composer is defined and managing_composer == true
+
+- name: COMPOSER | Absent credentials
+  file:
+    path: "{{ code_deploy_path }}/auth.json"
+    state: absent
+  become: yes
+
+- include_tasks: "make.yml"
+  when: make is defined and make == true

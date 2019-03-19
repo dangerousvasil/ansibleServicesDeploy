@@ -1,0 +1,44 @@
+---
+- name: VCS | Get base service path
+  set_fact: code_base_path="{{ code_src_path }}/{{ project }}/"
+
+- name: VCS | Get deploy service path
+  set_fact: code_deploy_path="{{ code_base_path }}/releases/{{ release_version }}/"
+
+- name: VCS | Clear up directory to get code
+  file:
+    state: absent
+    path: "{{ code_deploy_path }}"
+
+- name: VCS | Creates directory to releases code
+  file:
+    path: "{{ code_deploy_path }}"
+    state: directory
+    owner: "{{ www_user }}"
+    recurse: yes
+
+- include_tasks: "update-code/{{ deploy_via | default('git') }}.yml"
+
+- include_tasks: "managers/composer.yml"
+  when: composer is defined and composer == true
+
+- include_tasks: "managers/make.yml"
+  when: make is defined and make == true
+
+- include_tasks: "managers/shell.yml"
+  when: shell is defined and shell != false
+
+- name: RELEASE | Change softlink to new release
+  file:
+    state: link
+    force: yes
+    path: "{{ code_base_path }}/current"
+    src: "{{ code_deploy_path }}"
+
+- name:  RELEASE | Clean up releases
+  shell: ls -1dt {{ code_base_path }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
+  args:
+    chdir: "/"
+  when: keep_releases is defined and keep_releases > 0
+
+

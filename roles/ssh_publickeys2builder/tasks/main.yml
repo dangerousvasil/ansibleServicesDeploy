@@ -1,0 +1,6 @@
+---
+
+- name: BUILDER | Register keys for deploy user
+  authorized_key: user={{ rsync_user }}
+    key="ssh-rsa {{ ansible_ssh_host_key_rsa_public }} {{ rsync_user }}"
+  delegate_to: "{{ groups['builder'][0] }}"

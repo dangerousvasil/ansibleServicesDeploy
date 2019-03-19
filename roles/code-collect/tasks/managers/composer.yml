@@ -1,0 +1,27 @@
+---
+
+- name: COMPOSER | Clear
+  file:
+    path: "{{ code_deploy_path }}/vendor"
+    state: absent
+
+- name: COMPOSER | Set credentials
+  template: src=composer.j2 dest="{{ code_deploy_path }}/auth.json"
+
+- name: COMPOSER | Create
+  file:
+    path: "{{ code_deploy_path }}/vendor"
+    state: directory
+    owner: "{{ www_user }}"
+
+- name: COMPOSER | Managing
+  composer:
+    command: update
+    working_dir: "{{ code_deploy_path }}"
+  become: yes
+  become_user: "{{ www_user }}"
+
+- name: COMPOSER | Absent credentials
+  file:
+    path: "{{ code_deploy_path }}/auth.json"
+    state: absent

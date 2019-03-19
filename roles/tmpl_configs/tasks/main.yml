@@ -1,0 +1,24 @@
+---
+
+- name: TMPLS | Register tmpls
+  set_fact:
+    tmpls: "{{ [ services[item]['tmpl'] ] }}  + {{ tmpls | default([]) }}"
+  with_items: "{{ services }}"
+
+- name: TMPLS | Register unique tmpls
+  set_fact:
+    tmpls: "{{ tmpls | unique }}"
+
+- name: TMPLS | Create dest dir
+  file:
+    path: "{{ config_base_path }}/{{ item | dirname }}"
+    state: directory
+    mode: 0755
+  with_items: "{{ tmpls }}"
+
+- name: TMPLS | Create configure
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ config_base_path }}/{{ item }}"
+    mode: 0755
+  with_items: "{{ tmpls }}"

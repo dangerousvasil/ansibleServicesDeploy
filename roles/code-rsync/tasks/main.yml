@@ -1,0 +1,4 @@
+---
+
+- include_tasks: "rsync.yml"
+  when: vars.debs is defined and vars.debs|length > 1

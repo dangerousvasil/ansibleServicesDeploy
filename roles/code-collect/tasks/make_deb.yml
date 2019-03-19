@@ -1,0 +1,26 @@
+---
+- name: VCS | Get base service path
+  set_fact: code_base_path="{{ builder_src_path }}/{{ user }}/{{ project }}/"
+
+- name: VCS | Get deploy service path
+  set_fact: code_deploy_path="{{ code_base_path }}/deploy/{{ release_version }}/"
+
+- name: VCS | Clear up directory to get code
+  file:
+    state: absent
+    path: "{{ code_base_path }}"
+
+- name: VCS | Creates directory to deploy code
+  file:
+    path: "{{ code_base_path }}"
+    state: directory
+    owner: "{{ rsync_user }}"
+    recurse: yes
+
+- include_tasks: "update-code/{{ deploy_via | default('git') }}.yml"
+
+- include_tasks: "managers/composer.yml"
+  when: managing_composer is defined and managing_composer == true
+
+- include_tasks: "managers/make_deb.yml"
+

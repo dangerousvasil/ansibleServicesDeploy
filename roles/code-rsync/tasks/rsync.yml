@@ -1,0 +1,38 @@
+---
+- name: SYNC | Clear up directory to get code
+  file:
+    state: absent
+    path: "{{ item.path|dirname }}"
+  with_items:
+  - "{{ vars.debs }}"
+
+- name: SYNC | Creates directory to releases code
+  file:
+    path: "{{ item.path|dirname }}"
+    state: directory
+    recurse: yes
+  with_items:
+  - "{{ vars.debs }}"
+
+- name: SYNC | CODE
+  shell: >
+    scp -o ConnectTimeout=20 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+    -i /etc/ssh/ssh_host_rsa_key
+    -q3r {{ rsync_user }}@{{ groups['builder'][0] }}:{{ item.path }} {{ item.path }}
+  become: yes
+  with_items:
+  - "{{ vars.debs }}"
+
+- name: Install a .deb package
+  apt:
+    deb: "{{ item.path }}"
+  become: yes
+  with_items:
+  - "{{ vars.debs }}"
+
+- name: VCS | Clear up directory to get code
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  with_items:
+  - "{{ vars.debs }}"

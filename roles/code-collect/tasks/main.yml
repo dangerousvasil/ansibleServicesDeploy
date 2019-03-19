@@ -1,0 +1,18 @@
+---
+- name: DEPLOY | Get release version
+  set_fact:
+    release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
+  when: release_version is not defined or release_version == ""
+  tags:
+  - always
+
+- name: "MAKE | MAKE DEB"
+  import_tasks: "make_deb.yml"
+  delegate_to: "{{ groups['builder'][0] }}"
+  run_once: true
+  when: make_deb is defined and make_deb == true
+
+- name: "DEPLOY | DEPLOY CODE"
+  import_tasks: "deploy.yml"
+  run_once: true
+  when: make_deb is not defined or make_deb == false

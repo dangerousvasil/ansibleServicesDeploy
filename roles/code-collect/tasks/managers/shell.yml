@@ -1,0 +1,7 @@
+---
+
+- name: Launch shell
+  become: yes
+  shell: "{{ shell }}"
+  args:
+    chdir: "{{ code_deploy_path }}"

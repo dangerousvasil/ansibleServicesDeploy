@@ -1,0 +1,5 @@
+---
+
+builder_src_path: /tmp
+code_src_path:  /u01/src
+branch: master
