@@ -1,0 +1,14 @@
+---
+- name: "DEPLOY | COMMIT HASH"
+  include_role:
+    name: code_commit
+
+
+- name: DEPLOY | CODE-COLLECT
+  include_role:
+    name: code_collect
+  with_items: "{{ update_services }}"
+  when: update_services is defined
+  loop_control:
+    loop_var: __srv
+    label: "{{ __srv }}"

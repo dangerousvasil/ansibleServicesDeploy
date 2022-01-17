@@ -1,0 +1,14 @@
+---
+
+branches: []
+project: "{{ __srv }}"
+commit_hash: "{{ services[__srv]['commit_hash'] | default('0')}}"
+repository_url: "{{ services[__srv]['repository_url'] }}"
+branch: "{{ branches[__srv] | default('') }}"
+make: "{{ services[__srv]['make'] | default(false) }}"
+make_package: "{{ services[__srv]['make_package'] | default(false) }}"
+preshell: "{{ services[__srv]['preshell'] | default(false) }}"
+shell: "{{ services[__srv]['shell'] | default(false) }}"
+composer: "{{ services[__srv]['composer'] | default(false) }}"
+code_src_path: "{{ services[__srv]['code_src_path'] | default('/u01/src') }}"
+keep_releases: 3  

@@ -1,0 +1,19 @@
+---
+- name: COMMIT HASH | Set hash project hash folder
+  set_fact:
+    commit_hash_folder: "{{ builder_src_path }}/{{ user }}/hashes/{{ groupname }}"
+
+- block:
+   
+   - name: "COMMIT HASH |  GET HASH"
+     include_tasks: "commit.yml"
+     
+   - name: "COMMIT HASH |  FRESH HASH"
+     include_tasks: "fresh.yml"
+     when: (force_equ_update is not defined) or (force_equ_update | bool == false)
+   
+   - name: "COMMIT HASH |  FORCE HASH"
+     include_tasks: "force.yml"
+     when: (force_equ_update is defined) and (force_equ_update | bool == true)
+  
+  delegate_to: "{{ groups['builder'][0] }}"

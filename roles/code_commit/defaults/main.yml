@@ -1,0 +1,6 @@
+---
+
+builder_src_path: /tmp
+# commit_hash_folder: "{{ builder_src_path }}/{{ user }}/hashes"
+groupname: "{{ hostvars[inventory_hostname].group_names[0] }}"
+update_services: []

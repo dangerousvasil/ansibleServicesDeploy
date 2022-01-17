@@ -1,0 +1,36 @@
+---
+
+- name: COMMIT HASH | CHECK hash files folder
+  file:
+    path: "{{ commit_hash_folder }}"
+    state: directory
+    mode: 0755
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+
+
+- name: COMMIT HASH | CHECK hash files
+  file:
+    path: "{{ commit_hash_folder }}/{{ __srv }}.hash"
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+    state: touch
+    modification_time: preserve
+    access_time: preserve 
+  with_items: "{{ services }}"
+  when: branch != ""
+  loop_control:
+    loop_var: __srv
+
+
+
+- name: COMMIT HASH | GET commit hashes from repo
+  shell: "git ls-remote {{ repository_url }} -b {{ branch }}"
+  register: new_commit
+  with_items: "{{ services }}"
+  when: branch != ""
+  loop_control:
+    loop_var: __srv
+
+
+

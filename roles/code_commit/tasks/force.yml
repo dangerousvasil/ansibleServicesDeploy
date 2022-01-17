@@ -1,0 +1,10 @@
+---
+
+- name: COMMIT HASH | FORCE update
+  set_fact: 
+    update_services: "{{ update_services |default([]) | combine( {  __srv2.__srv : __srv2.stdout } ) }}"
+  with_items: "{{ new_commit.results }}"
+  loop_control:
+    loop_var: __srv2
+    label: "{{ __srv2.__srv }}"
+  when: (__srv2.changed == true)

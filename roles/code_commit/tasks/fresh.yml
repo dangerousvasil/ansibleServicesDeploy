@@ -1,0 +1,19 @@
+---
+
+- name: COMMIT HASH | GET commit hashes from hash file
+  shell: "cat {{ commit_hash_folder }}/{{ item.__srv }}.hash"
+  register: old_commit
+  with_items: "{{ new_commit.results }}"
+  loop_control:
+    label: "{{ item.__srv }}"
+  when: (item.changed == true)
+
+
+- name: COMMIT HASH | SELECT fresh commits
+  set_fact: 
+    update_services: "{{ update_services |default([]) | combine( { __srv2.item.__srv : __srv2.item.stdout } ) }}"
+  with_items: "{{ old_commit.results }}"
+  loop_control:
+    loop_var: __srv2
+    label: "{{ __srv2.item.__srv }}"
+  when: (__srv2.item.changed == true) and not (__srv2.item.stdout == __srv2.stdout)
